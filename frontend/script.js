@@ -1,8 +1,8 @@
 let currentVideoPath = null;
 
 // Backend URL - change this to your deployed backend URL
-const BACKEND_URL = "http://127.0.0.1:8081"; // For local development
-// const BACKEND_URL = "https://your-backend.vercel.app"; // For production
+// const BACKEND_URL = "http://127.0.0.1:8081"; // For local development
+const BACKEND_URL = "https://your-backend.vercel.app"; // For production
 
 async function generateShort() {
   const productName = document.getElementById("productName").value;
@@ -26,27 +26,18 @@ async function generateShort() {
   previewContainer.style.display = "none";
   
   try {
-    const formData = new FormData();
-    formData.append("product_name", productName);
-    formData.append("style", style);
-    if (productImage) {
-      formData.append("product_image", productImage);
-    }
-
-    const response = await fetch(`${BACKEND_URL}/generate`, {
-      method: "POST",
-      body: formData
-    });
+    // Demo mode - generate a sample script
+    showStatus("Generating AI script...", "loading");
     
-    const data = await response.json();
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    if (data.status === "success") {
-      currentVideoPath = `${BACKEND_URL}${data.video_path}`;
-      showStatus("Short generated successfully!", "success");
-      showVideoPreview(currentVideoPath);
-    } else {
-      showStatus("Error: " + data.message, "error");
-    }
+    // Generate sample script based on product and style
+    const sampleScript = generateSampleScript(productName, style);
+    
+    showStatus("Script generated successfully! (Demo Mode)", "success");
+    showDemoResult(sampleScript, productName);
+    
   } catch (error) {
     showStatus("Error: " + error.message, "error");
   } finally {
@@ -61,6 +52,92 @@ function showStatus(message, type) {
   const status = document.getElementById("status");
   status.textContent = message;
   status.className = `status ${type}`;
+}
+
+function generateSampleScript(productName, style) {
+  const scripts = {
+    professional: `[Opening shot: Clean, modern presentation of ${productName}]
+
+🎵 [Upbeat corporate music]
+
+**Voiceover:** "Introducing ${productName} - where innovation meets excellence."
+
+[Quick cuts showcasing key features]
+
+**Voiceover:** "Experience the future today. Professional quality, unmatched performance."
+
+[Closing shot with call-to-action]
+
+**Voiceover:** "Ready to transform your world? Get started with ${productName} now!"`,
+
+    casual: `[Fun, relaxed intro with ${productName}]
+
+🎵 [Trendy background music]
+
+**Voiceover:** "Hey! Check this out - ${productName} is absolutely game-changing!"
+
+[Real-world usage shots]
+
+**Voiceover:** "Seriously, this thing is amazing. You've got to try it!"
+
+[Social proof moment]
+
+**Voiceover:** "Join thousands who already love ${productName}. What are you waiting for?"`,
+
+    energetic: `[Fast-paced, dynamic intro]
+
+🎵 [High-energy music]
+
+**Voiceover:** "BOOM! ${productName} is here and it's INCREDIBLE!"
+
+[Quick cuts, exciting visuals]
+
+**Voiceover:** "This will blow your mind! The future is NOW!"
+
+[Action-packed finale]
+
+**Voiceover:** "Don't miss out! Get ${productName} TODAY and change everything!"`,
+
+    minimalist: `[Clean, simple shot of ${productName}]
+
+🎵 [Subtle ambient music]
+
+**Voiceover:** "${productName}. Simple. Powerful. Perfect."
+
+[Minimalist feature highlights]
+
+**Voiceover:** "Everything you need. Nothing you don't."
+
+[Elegant closing]
+
+**Voiceover:** "Discover ${productName}. Experience the difference."`
+  };
+  
+  return scripts[style] || scripts.professional;
+}
+
+function showDemoResult(script, productName) {
+  const previewContainer = document.getElementById("preview-container");
+  const preview = document.getElementById("preview");
+  
+  // Create a demo video placeholder
+  preview.innerHTML = `
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; padding: 40px; border-radius: 15px; text-align: center;">
+      <h3 style="margin-bottom: 20px;">🎬 Generated Script for "${productName}"</h3>
+      <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; 
+                  text-align: left; font-family: monospace; white-space: pre-line; 
+                  line-height: 1.6; max-height: 300px; overflow-y: auto;">
+${script}
+      </div>
+      <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+        ✨ This is a demo script. Connect a backend for full video generation!
+      </p>
+    </div>
+  `;
+  
+  previewContainer.style.display = "block";
+  previewContainer.scrollIntoView({ behavior: "smooth" });
 }
 
 function showVideoPreview(videoPath) {
