@@ -1,0 +1,13 @@
+{
+  "name": "ai-shorts-generator",
+  "version": "1.0.0",
+  "description": "AI-powered YouTube Shorts Generator",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step needed for static frontend'",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}

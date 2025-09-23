@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Shorts Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>AI Shorts Generator</h1>
+    <p class="subtitle">Generate engaging YouTube Shorts automatically</p>
+    
+    <div class="form-container">
+      <div class="input-group">
+        <label for="productName">Product Name</label>
+        <input type="text" id="productName" placeholder="Enter product name (e.g., iPhone 15 Pro)">
+      </div>
+      
+      <div class="input-group">
+        <label for="productImage">Product Image (Optional)</label>
+        <input type="file" id="productImage" accept="image/*">
+      </div>
+      
+      <div class="input-group">
+        <label for="styleSelect">Video Style</label>
+        <select id="styleSelect">
+          <option value="professional">Professional</option>
+          <option value="casual">Casual</option>
+          <option value="energetic">Energetic</option>
+          <option value="minimalist">Minimalist</option>
+        </select>
+      </div>
+      
+      <button id="generateBtn" onclick="generateShort()">
+        <span class="btn-text">Generate Short</span>
+        <span class="btn-loading" style="display: none;">Generating...</span>
+      </button>
+    </div>
+    
+    <div id="status" class="status"></div>
+    
+    <div id="preview-container" class="preview-container" style="display: none;">
+      <h3>Your Generated Short</h3>
+      <video id="preview" controls></video>
+      <div class="video-actions">
+        <button id="downloadBtn" onclick="downloadVideo()">Download Video</button>
+        <button id="uploadBtn" onclick="uploadToYouTube()">Upload to YouTube</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
