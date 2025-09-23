@@ -2,7 +2,7 @@ let currentVideoPath = null;
 
 // Backend URL - change this to your deployed backend URL
 // const BACKEND_URL = "http://127.0.0.1:8081"; // For local development
-const BACKEND_URL = "https://your-backend.vercel.app"; // For production
+const BACKEND_URL = "https://your-railway-backend-url.railway.app"; // For production
 
 async function generateShort() {
   console.log("generateShort function called!");
