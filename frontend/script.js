@@ -123,8 +123,13 @@ function generateSampleScript(productName, style) {
 }
 
 function showDemoResult(script, productName) {
+  console.log("showDemoResult called with:", productName, script);
+  
   const previewContainer = document.getElementById("preview-container");
   const preview = document.getElementById("preview");
+  
+  console.log("preview element:", preview);
+  console.log("previewContainer element:", previewContainer);
   
   // Create a demo video placeholder
   preview.innerHTML = `
@@ -144,6 +149,8 @@ ${script}
   
   previewContainer.style.display = "block";
   previewContainer.scrollIntoView({ behavior: "smooth" });
+  
+  console.log("Demo result displayed!");
 }
 
 function showVideoPreview(videoPath) {
