@@ -7,9 +7,19 @@ import os
 
 app = FastAPI()
 
-app.mount("/frontend", StaticFiles(directory="../frontend", html=True), name="frontend")
-app.mount("/static", StaticFiles(directory="../static"), name="static")
-app.mount("/outputs", StaticFiles(directory="../outputs"), name="outputs")
+# Get the project root directory
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+frontend_dir = os.path.join(project_root, "frontend")
+static_dir = os.path.join(project_root, "static")
+outputs_dir = os.path.join(project_root, "outputs")
+
+# Create directories if they don't exist
+os.makedirs(static_dir, exist_ok=True)
+os.makedirs(outputs_dir, exist_ok=True)
+
+app.mount("/frontend", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+app.mount("/outputs", StaticFiles(directory=outputs_dir), name="outputs")
 
 @app.get("/")
 async def root():
@@ -21,7 +31,7 @@ async def health():
 
 @app.get("/frontend/")
 async def frontend():
-    return FileResponse("../frontend/index.html")
+    return FileResponse(os.path.join(frontend_dir, "index.html"))
 
 @app.post("/generate")
 async def create_short(product_name: str = Form(...), product_image: UploadFile = None):
