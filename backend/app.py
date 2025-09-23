@@ -15,6 +15,10 @@ app.mount("/outputs", StaticFiles(directory="../outputs"), name="outputs")
 async def root():
     return {"message": "AI Shorts Generator API is running! Go to /frontend/ to access the web interface."}
 
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "message": "API is running"}
+
 @app.get("/frontend/")
 async def frontend():
     return FileResponse("../frontend/index.html")
