@@ -5,12 +5,17 @@ let currentVideoPath = null;
 const BACKEND_URL = "https://your-backend.vercel.app"; // For production
 
 async function generateShort() {
+  console.log("generateShort function called!");
+  
   const productName = document.getElementById("productName").value;
   const productImage = document.getElementById("productImage").files[0];
   const style = document.getElementById("styleSelect").value;
   const generateBtn = document.getElementById("generateBtn");
   const status = document.getElementById("status");
   const previewContainer = document.getElementById("preview-container");
+  
+  console.log("Product name:", productName);
+  console.log("Style:", style);
   
   // Validate input
   if (!productName.trim()) {
@@ -39,6 +44,7 @@ async function generateShort() {
     showDemoResult(sampleScript, productName);
     
   } catch (error) {
+    console.error("Error in generateShort:", error);
     showStatus("Error: " + error.message, "error");
   } finally {
     // Reset button state
