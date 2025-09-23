@@ -1,7 +1,9 @@
 import openai
 import json
+import os
 
-with open("config.json") as f:
+config_path = os.path.join(os.path.dirname(__file__), "config.json")
+with open(config_path) as f:
     config = json.load(f)
 
 client = openai.OpenAI(api_key=config["openai_api_key"])

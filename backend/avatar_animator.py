@@ -3,7 +3,8 @@ import json
 import os
 import time
 
-with open("config.json") as f:
+config_path = os.path.join(os.path.dirname(__file__), "config.json")
+with open(config_path) as f:
     config = json.load(f)
 
 DID_API_KEY = config["did_api_key"]
