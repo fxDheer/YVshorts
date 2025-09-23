@@ -1,0 +1,38 @@
+from fastapi import FastAPI, UploadFile, Form
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
+import uvicorn
+from video_pipeline import generate_short
+import os
+
+app = FastAPI()
+
+app.mount("/frontend", StaticFiles(directory="../frontend", html=True), name="frontend")
+app.mount("/static", StaticFiles(directory="../static"), name="static")
+app.mount("/outputs", StaticFiles(directory="../outputs"), name="outputs")
+
+@app.get("/")
+async def root():
+    return {"message": "AI Shorts Generator API is running! Go to /frontend/ to access the web interface."}
+
+@app.get("/frontend/")
+async def frontend():
+    return FileResponse("../frontend/index.html")
+
+@app.post("/generate")
+async def create_short(product_name: str = Form(...), product_image: UploadFile = None):
+    try:
+        image_path = None
+        if product_image:
+            os.makedirs("static/assets", exist_ok=True)
+            image_path = f"static/assets/{product_image.filename}"
+            with open(image_path, "wb") as f:
+                f.write(await product_image.read())
+
+        output_video = generate_short(product_name, image_path)
+        return JSONResponse({"status": "success", "video_path": f"/{output_video}"})
+    except Exception as e:
+        return JSONResponse({"status": "error", "message": str(e)})
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8080)
