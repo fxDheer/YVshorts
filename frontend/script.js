@@ -104,8 +104,11 @@ async function generateShort() {
       showStatus("Video generated successfully!", "success");
       currentVideoPath = data.video_path;
       
-      // Check if this is a data URL video
-      if (data.video_type === "data_url") {
+      // Check if this is a real AI-generated content
+      if (data.video_type === "real_video" || data.video_type === "real_script") {
+        // Show the real AI-generated content
+        showRealVideo(data.video_path, data.script, productName, style);
+      } else if (data.video_type === "data_url") {
         // Show the generated video content
         showVideoContent(data.video_path, productName, style);
       } else if (data.video_path && data.video_path.includes("demo_video")) {
