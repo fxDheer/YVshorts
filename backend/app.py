@@ -1,12 +1,22 @@
 from fastapi import FastAPI, UploadFile, Form
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from video_pipeline import generate_short
 import os
 import subprocess
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 # Get the project root directory
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,6 +39,10 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "healthy", "message": "API is running"}
+
+@app.get("/test")
+async def test():
+    return {"message": "Backend is working!", "status": "success"}
 
 @app.get("/frontend/")
 async def frontend():
