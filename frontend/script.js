@@ -103,7 +103,14 @@ async function generateShort() {
     if (data.status === "success") {
       showStatus("Video generated successfully!", "success");
       currentVideoPath = data.video_path;
-      showVideoPreview(data.video_path);
+      
+      // Check if this is a demo video path
+      if (data.video_path && data.video_path.includes("demo_video")) {
+        // Show demo mode instead of trying to load non-existent video
+        showDemoResult(`Demo video generated for ${productName} with ${style} style!`, productName);
+      } else {
+        showVideoPreview(data.video_path);
+      }
     } else {
       throw new Error(data.message || "Video generation failed");
     }
