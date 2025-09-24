@@ -22,16 +22,21 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    // Video generation endpoint
-    const { product_name, style } = req.body;
-    
-    // For now, just return a success response
-    // In a real implementation, you'd generate a video here
-    res.status(200).json({
-      status: "success",
-      message: `Video generation started for ${product_name} with ${style} style`,
-      video_path: "/outputs/demo_video.mp4"
-    });
+    // Video generation endpoint - simplified
+    try {
+      // Just return a success response for now
+      res.status(200).json({
+        status: "success",
+        message: "Video generation started successfully!",
+        video_path: "/outputs/demo_video.mp4"
+      });
+    } catch (error) {
+      console.error('Error in POST handler:', error);
+      res.status(500).json({
+        status: "error",
+        message: "Internal server error"
+      });
+    }
     return;
   }
 
