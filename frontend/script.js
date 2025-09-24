@@ -2,7 +2,7 @@ let currentVideoPath = null;
 
 // Backend URL - change this to your deployed backend URL
 // const BACKEND_URL = "http://127.0.0.1:8081"; // For local development
-const BACKEND_URL = "https://yvshorts-production.up.railway.app"; // For production (Railway backend)
+const BACKEND_URL = "https://y-vshorts.vercel.app/api"; // For production (Vercel backend)
 
 // Force cache refresh
 console.log("Script loaded - Backend URL:", BACKEND_URL);

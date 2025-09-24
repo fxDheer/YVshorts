@@ -6,8 +6,8 @@
       "use": "@vercel/static"
     },
     {
-      "src": "api/generate.py",
-      "use": "@vercel/python"
+      "src": "api/generate.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -17,7 +17,7 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/generate.py"
+      "dest": "/api/generate.js"
     },
     {
       "src": "/(.*)",
