@@ -2,7 +2,7 @@ let currentVideoPath = null;
 
 // Backend URL - change this to your deployed backend URL
 // const BACKEND_URL = "http://127.0.0.1:8081"; // For local development
-const BACKEND_URL = "https://your-railway-backend-url.railway.app"; // For production
+const BACKEND_URL = "https://yvshorts-production.up.railway.app"; // For production
 
 async function generateShort() {
   console.log("generateShort function called!");
@@ -31,17 +31,30 @@ async function generateShort() {
   previewContainer.style.display = "none";
   
   try {
-    // Demo mode - generate a sample script
+    // Call real backend API
     showStatus("Generating AI script...", "loading");
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    const formData = new FormData();
+    formData.append("product_name", productName);
+    formData.append("style", style);
+    if (productImage) {
+      formData.append("product_image", productImage);
+    }
     
-    // Generate sample script based on product and style
-    const sampleScript = generateSampleScript(productName, style);
+    const response = await fetch(`${BACKEND_URL}/generate`, {
+      method: "POST",
+      body: formData
+    });
     
-    showStatus("Script generated successfully! (Demo Mode)", "success");
-    showDemoResult(sampleScript, productName);
+    const data = await response.json();
+    
+    if (data.status === "success") {
+      showStatus("Video generated successfully!", "success");
+      currentVideoPath = data.video_path;
+      showVideoPreview(data.video_path);
+    } else {
+      throw new Error(data.message || "Video generation failed");
+    }
     
   } catch (error) {
     console.error("Error in generateShort:", error);
