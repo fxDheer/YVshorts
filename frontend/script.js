@@ -200,6 +200,64 @@ function generateSampleScript(productName, style) {
   return scripts[style] || scripts.professional;
 }
 
+function showRealVideo(videoUrl, script, productName, style) {
+  console.log("showRealVideo called with:", productName, style, videoUrl);
+  
+  const previewContainer = document.getElementById("preview-container");
+  const preview = document.getElementById("preview");
+  
+  // Hide the video element and show real video content
+  preview.style.display = "none";
+  
+  // Create a real video display div
+  let videoDisplay = document.getElementById("real-video-display");
+  if (!videoDisplay) {
+    videoDisplay = document.createElement("div");
+    videoDisplay.id = "real-video-display";
+    previewContainer.appendChild(videoDisplay);
+  }
+  
+  videoDisplay.innerHTML = `
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; padding: 40px; border-radius: 15px; text-align: center;">
+      <h3 style="margin-bottom: 20px;">🎬 REAL AI-Generated Content for "${productName}"</h3>
+      
+      <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; 
+                  margin: 20px 0; font-size: 24px; font-weight: bold;">
+        ${productName}
+      </div>
+      
+      <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; 
+                  font-size: 18px; opacity: 0.8; margin-bottom: 20px;">
+        ${style.toUpperCase()} STYLE
+      </div>
+      
+      <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; 
+                  text-align: left; font-family: monospace; white-space: pre-line; 
+                  line-height: 1.6; max-height: 300px; overflow-y: auto; margin: 20px 0;">
+        <strong>🤖 AI-Generated Script:</strong><br>
+        ${script}
+      </div>
+      
+      <div style="background: rgba(0,255,0,0.2); padding: 15px; border-radius: 10px; 
+                  margin: 20px 0; border: 2px solid #00ff00;">
+        <strong>✅ REAL AI CONTENT GENERATED!</strong><br>
+        <small>Using OpenAI GPT-4o-mini</small>
+      </div>
+      
+      <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+        🚀 This is a REAL AI-generated script for your YouTube Short!
+      </p>
+    </div>
+  `;
+  
+  videoDisplay.style.display = "block";
+  previewContainer.style.display = "block";
+  previewContainer.scrollIntoView({ behavior: "smooth" });
+  
+  console.log("Real video content displayed!");
+}
+
 function showVideoContent(videoData, productName, style) {
   console.log("showVideoContent called with:", productName, style);
   
