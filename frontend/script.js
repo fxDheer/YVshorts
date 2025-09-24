@@ -31,6 +31,36 @@ async function generateShort() {
   previewContainer.style.display = "none";
   
   try {
+    // First test if backend is available
+    showStatus("Testing backend connection...", "loading");
+    
+    try {
+      const testResponse = await fetch(`${BACKEND_URL}/test`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      
+      if (!testResponse.ok) {
+        throw new Error("Backend not responding");
+      }
+      
+      const testData = await testResponse.json();
+      console.log("Backend test successful:", testData);
+      
+    } catch (testError) {
+      console.log("Backend not available, falling back to demo mode:", testError);
+      showStatus("Backend unavailable, using demo mode...", "loading");
+      
+      // Fallback to demo mode
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const sampleScript = generateSampleScript(productName, style);
+      showStatus("Script generated successfully! (Demo Mode)", "success");
+      showDemoResult(sampleScript, productName);
+      return;
+    }
+    
     // Call real backend API
     showStatus("Generating AI script...", "loading");
     
