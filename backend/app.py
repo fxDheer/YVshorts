@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from video_pipeline import generate_short
 import os
 import subprocess
 
