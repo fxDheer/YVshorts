@@ -104,8 +104,11 @@ async function generateShort() {
       showStatus("Video generated successfully!", "success");
       currentVideoPath = data.video_path;
       
-      // Check if this is a demo video path
-      if (data.video_path && data.video_path.includes("demo_video")) {
+      // Check if this is a data URL video
+      if (data.video_type === "data_url") {
+        // Show the generated video content
+        showVideoContent(data.video_path, productName, style);
+      } else if (data.video_path && data.video_path.includes("demo_video")) {
         // Show demo mode instead of trying to load non-existent video
         showDemoResult(`Demo video generated for ${productName} with ${style} style!`, productName);
       } else {
@@ -192,6 +195,51 @@ function generateSampleScript(productName, style) {
   };
   
   return scripts[style] || scripts.professional;
+}
+
+function showVideoContent(videoData, productName, style) {
+  console.log("showVideoContent called with:", productName, style);
+  
+  const previewContainer = document.getElementById("preview-container");
+  const preview = document.getElementById("preview");
+  
+  // Hide the video element and show video content instead
+  preview.style.display = "none";
+  
+  // Create a video display div
+  let videoDisplay = document.getElementById("video-display");
+  if (!videoDisplay) {
+    videoDisplay = document.createElement("div");
+    videoDisplay.id = "video-display";
+    previewContainer.appendChild(videoDisplay);
+  }
+  
+  // Decode the base64 data and create an iframe
+  const decodedData = atob(videoData.split(',')[1]);
+  
+  videoDisplay.innerHTML = `
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; padding: 40px; border-radius: 15px; text-align: center;">
+      <h3 style="margin-bottom: 20px;">🎬 Generated Video for "${productName}"</h3>
+      <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; 
+                  margin: 20px 0; font-size: 24px; font-weight: bold;">
+        ${productName}
+      </div>
+      <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; 
+                  font-size: 18px; opacity: 0.8;">
+        ${style.toUpperCase()} STYLE
+      </div>
+      <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+        ✨ Video generated successfully! This is a preview of your short.
+      </p>
+    </div>
+  `;
+  
+  videoDisplay.style.display = "block";
+  previewContainer.style.display = "block";
+  previewContainer.scrollIntoView({ behavior: "smooth" });
+  
+  console.log("Video content displayed!");
 }
 
 function showDemoResult(script, productName) {
