@@ -35,6 +35,7 @@ async function generateShort() {
     showStatus("Testing backend connection...", "loading");
     
     try {
+      console.log("Testing backend at:", `${BACKEND_URL}/test`);
       const testResponse = await fetch(`${BACKEND_URL}/test`, {
         method: "GET",
         headers: {
@@ -42,8 +43,11 @@ async function generateShort() {
         }
       });
       
+      console.log("Test response status:", testResponse.status);
+      console.log("Test response headers:", testResponse.headers);
+      
       if (!testResponse.ok) {
-        throw new Error("Backend not responding");
+        throw new Error(`Backend not responding: ${testResponse.status} ${testResponse.statusText}`);
       }
       
       const testData = await testResponse.json();
@@ -51,7 +55,7 @@ async function generateShort() {
       
     } catch (testError) {
       console.log("Backend not available, falling back to demo mode:", testError);
-      showStatus("Backend unavailable, using demo mode...", "loading");
+      showStatus(`Backend unavailable (${testError.message}), using demo mode...`, "loading");
       
       // Fallback to demo mode
       await new Promise(resolve => setTimeout(resolve, 2000));
