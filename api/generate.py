@@ -2,7 +2,6 @@ from fastapi import FastAPI, UploadFile, Form
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import subprocess
 
 app = FastAPI()
 
@@ -21,39 +20,18 @@ app.add_middleware(
 )
 
 def create_simple_video(product_name: str, style: str, image_path: str = None) -> str:
-    """Create a simple video for testing"""
+    """Create a simple video for testing - lightweight version for Vercel"""
+    # For Vercel, we'll just return a placeholder since FFmpeg is too heavy
+    # In a real implementation, you'd use a video generation service
     output_path = "outputs/simple_short.mp4"
     os.makedirs("outputs", exist_ok=True)
     
-    try:
-        # Create a simple video with FFmpeg
-        cmd = [
-            "ffmpeg", "-f", "lavfi", "-i", "color=c=purple:s=1080x1920:d=15",
-            "-vf", f"drawtext=text='{product_name} - {style.title()} Style':fontsize=50:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2",
-            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-y", output_path
-        ]
-        
-        subprocess.run(cmd, capture_output=True, check=True)
-        print(f"Simple video created: {output_path}")
-        return output_path
-        
-    except Exception as e:
-        print(f"Simple video creation failed: {e}")
-        # Create a basic video
-        try:
-            cmd = [
-                "ffmpeg", "-f", "lavfi", "-i", "testsrc=duration=10:size=1080x1920:rate=30",
-                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-y", output_path
-            ]
-            subprocess.run(cmd, capture_output=True, check=True)
-            print(f"Basic video created: {output_path}")
-            return output_path
-        except:
-            # Create placeholder
-            with open(output_path, "w") as f:
-                f.write("placeholder")
-            print(f"Placeholder created: {output_path}")
-            return output_path
+    # Create a simple text file as placeholder
+    with open(output_path, "w") as f:
+        f.write(f"Video placeholder for {product_name} - {style} style")
+    
+    print(f"Placeholder video created: {output_path}")
+    return output_path
 
 @app.get("/")
 async def root():
