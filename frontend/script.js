@@ -131,8 +131,18 @@ function showDemoResult(script, productName) {
   console.log("preview element:", preview);
   console.log("previewContainer element:", previewContainer);
   
-  // Create a demo video placeholder
-  preview.innerHTML = `
+  // Hide the video element and show script content instead
+  preview.style.display = "none";
+  
+  // Create a script display div
+  let scriptDisplay = document.getElementById("script-display");
+  if (!scriptDisplay) {
+    scriptDisplay = document.createElement("div");
+    scriptDisplay.id = "script-display";
+    previewContainer.appendChild(scriptDisplay);
+  }
+  
+  scriptDisplay.innerHTML = `
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                 color: white; padding: 40px; border-radius: 15px; text-align: center;">
       <h3 style="margin-bottom: 20px;">🎬 Generated Script for "${productName}"</h3>
@@ -147,6 +157,7 @@ ${script}
     </div>
   `;
   
+  scriptDisplay.style.display = "block";
   previewContainer.style.display = "block";
   previewContainer.scrollIntoView({ behavior: "smooth" });
   
@@ -156,7 +167,13 @@ ${script}
 function showVideoPreview(videoPath) {
   const preview = document.getElementById("preview");
   const previewContainer = document.getElementById("preview-container");
+  const scriptDisplay = document.getElementById("script-display");
   
+  // Hide script display and show video
+  if (scriptDisplay) {
+    scriptDisplay.style.display = "none";
+  }
+  preview.style.display = "block";
   preview.src = videoPath;
   previewContainer.style.display = "block";
   
