@@ -105,34 +105,63 @@ async function createAvatarVideo(script, voiceUrl) {
   
   console.log('🎭 Calling D-ID API with key:', didApiKey.substring(0, 10) + '...');
   
-  const response = await fetch('https://api.d-id.com/talks', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${Buffer.from(didApiKey).toString('base64')}`,  // Proper Basic auth encoding
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      script: {
-        type: "text",
-        input: script
-      },
-      source_url: "https://d-id-public-bucket.s3.amazonaws.com/or-roman.jpg",
-      config: {
-        fluent: true,
-        pad_audio: 0.0
-      }
-    })
-  });
+  // Try multiple avatar options to avoid celebrity detection
+  const avatarOptions = [
+    "https://d-id-public-bucket.s3.amazonaws.com/amy-jcwCkr1N9MI-unsplash.jpg",
+    "https://d-id-public-bucket.s3.amazonaws.com/alex.jpg", 
+    "https://d-id-public-bucket.s3.amazonaws.com/or-roman.jpg"
+  ];
   
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('❌ D-ID API error:', response.status, errorText);
-    throw new Error(`D-ID API error: ${response.status} - ${errorText}`);
+  for (let i = 0; i < avatarOptions.length; i++) {
+    try {
+      console.log(`🎭 Trying avatar option ${i + 1}: ${avatarOptions[i]}`);
+      
+      const response = await fetch('https://api.d-id.com/talks', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${Buffer.from(didApiKey).toString('base64')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          script: {
+            type: "text",
+            input: script
+          },
+          source_url: avatarOptions[i],
+          config: {
+            fluent: true,
+            pad_audio: 0.0
+          }
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ D-ID avatar video created with option', i + 1, ':', data.id);
+        return data.id;
+      } else {
+        const errorText = await response.text();
+        console.log(`❌ Avatar option ${i + 1} failed:`, response.status, errorText);
+        
+        // If it's a celebrity detection error, try the next avatar
+        if (response.status === 451 && errorText.includes('CelebrityDetectedError')) {
+          console.log('🔄 Celebrity detected, trying next avatar...');
+          continue;
+        }
+        
+        // For other errors, throw immediately
+        throw new Error(`D-ID API error: ${response.status} - ${errorText}`);
+      }
+    } catch (error) {
+      if (i === avatarOptions.length - 1) {
+        // Last option failed, throw the error
+        throw error;
+      }
+      console.log(`🔄 Avatar option ${i + 1} failed, trying next...`);
+    }
   }
   
-  const data = await response.json();
-  console.log('✅ D-ID avatar video created:', data.id);
-  return data.id; // Return the talk ID for polling
+  throw new Error('All avatar options failed');
 }
 
 export default async function handler(req, res) {
