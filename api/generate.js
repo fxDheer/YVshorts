@@ -65,10 +65,12 @@ async function generateVoice(script) {
     throw new Error('ElevenLabs API key not configured');
   }
   
+  console.log('🎤 Calling ElevenLabs API with key:', elevenlabsApiKey.substring(0, 10) + '...');
+  
   const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${elevenlabsApiKey}`,
+      'xi-api-key': elevenlabsApiKey,  // ElevenLabs uses xi-api-key header, not Authorization
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -82,10 +84,13 @@ async function generateVoice(script) {
   });
   
   if (!response.ok) {
-    throw new Error(`ElevenLabs API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error('❌ ElevenLabs API error:', response.status, errorText);
+    throw new Error(`ElevenLabs API error: ${response.status} - ${errorText}`);
   }
   
   const audioBuffer = await response.arrayBuffer();
+  console.log('✅ ElevenLabs voice generated successfully');
   // In a real implementation, you'd save this and return the URL
   return "voice_generated.mp3";
 }
@@ -98,10 +103,12 @@ async function createAvatarVideo(script, voiceUrl) {
     throw new Error('D-ID API key not configured');
   }
   
+  console.log('🎭 Calling D-ID API with key:', didApiKey.substring(0, 10) + '...');
+  
   const response = await fetch('https://api.d-id.com/talks', {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${didApiKey}`,
+      'Authorization': `Basic ${Buffer.from(didApiKey).toString('base64')}`,  // Proper Basic auth encoding
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -118,10 +125,13 @@ async function createAvatarVideo(script, voiceUrl) {
   });
   
   if (!response.ok) {
-    throw new Error(`D-ID API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error('❌ D-ID API error:', response.status, errorText);
+    throw new Error(`D-ID API error: ${response.status} - ${errorText}`);
   }
   
   const data = await response.json();
+  console.log('✅ D-ID avatar video created:', data.id);
   return data.id; // Return the talk ID for polling
 }
 
