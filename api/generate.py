@@ -9,7 +9,12 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://y-vshorts.vercel.app",    # ✅ must match exactly the frontend URL
+        "https://v-shorts.vercel.app",     # ✅ add this too if you sometimes use this domain
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -56,7 +61,11 @@ async def root():
 
 @app.get("/test")
 async def test():
-    return {"message": "Backend is working!", "status": "success"}
+    return {"message": "Backend is working!", "status": "success", "cors": "configured"}
+
+@app.options("/test")
+async def test_options():
+    return {"message": "CORS preflight OK"}
 
 @app.post("/generate")
 async def create_short(product_name: str = Form(...), product_image: UploadFile = None, style: str = Form("professional")):
