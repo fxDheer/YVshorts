@@ -4,6 +4,9 @@ let currentVideoPath = null;
 // const BACKEND_URL = "http://127.0.0.1:8081"; // For local development
 const BACKEND_URL = "https://y-vshorts.vercel.app/api"; // For production (Vercel backend)
 
+// Force cache refresh
+console.log("Script loaded - Backend URL:", BACKEND_URL);
+
 async function generateShort() {
   console.log("generateShort function called!");
   
